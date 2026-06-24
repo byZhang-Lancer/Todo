@@ -26,6 +26,7 @@ const query = ref("");
 const theme = ref(localStorage.getItem(themeKey) || "light");
 
 const todayLabel = new Intl.DateTimeFormat("zh-CN", {
+  year: "numeric",
   weekday: "long",
   month: "long",
   day: "numeric",
