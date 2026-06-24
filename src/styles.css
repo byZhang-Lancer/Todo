@@ -140,6 +140,70 @@ h1 {
   font-size: 1.2rem;
 }
 
+.task-guide {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(260px, auto);
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+}
+
+.guide-label,
+.guide-copy {
+  margin: 0;
+}
+
+.guide-label {
+  color: var(--ink);
+  font-size: 1.02rem;
+  font-weight: 800;
+}
+
+.guide-copy {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.mood-module {
+  display: grid;
+  gap: 8px;
+}
+
+.mood-module span {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.mood-options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(52px, 1fr));
+  gap: 6px;
+}
+
+.mood-option {
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--muted);
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.mood-option.is-active {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: white;
+  font-weight: 800;
+}
+
 .task-form {
   display: grid;
   grid-template-columns: minmax(180px, 1fr) 104px 104px 150px 86px;
@@ -411,6 +475,10 @@ h1 {
 
   .task-form {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .task-guide {
+    grid-template-columns: 1fr;
   }
 
   .task-form input:first-of-type,

@@ -7,6 +7,7 @@ const title = ref("");
 const category = ref("工作");
 const priority = ref("normal");
 const dueDate = ref("");
+const urgency = ref("normal");
 
 function submitTask() {
   const trimmedTitle = title.value.trim();
@@ -17,11 +18,13 @@ function submitTask() {
     category: category.value,
     priority: priority.value,
     dueDate: dueDate.value,
+    urgency: urgency.value,
   });
 
   title.value = "";
   priority.value = "normal";
   dueDate.value = "";
+  urgency.value = "normal";
 }
 </script>
 
@@ -56,6 +59,13 @@ function submitTask() {
 
     <label class="sr-only" for="dueInput">截止日期</label>
     <input id="dueInput" v-model="dueDate" name="due" type="date" aria-label="截止日期" />
+
+    <label class="sr-only" for="urgencySelect">紧急程度</label>
+    <select id="urgencySelect" v-model="urgency" name="urgency" aria-label="紧急程度">
+      <option value="normal">一般</option>
+      <option value="urgent">紧急</option>
+      <option value="later">可缓</option>
+    </select>
 
     <button class="primary-button" type="submit">添加</button>
   </form>

@@ -6,11 +6,18 @@ import TaskSummary from "./components/TaskSummary.vue";
 
 const storageKey = "todo-list-site.tasks";
 const themeKey = "todo-list-site.theme";
+const moodKey = "todo-list-site.mood";
 
 const priorityLabels = {
   high: "重要",
   normal: "普通",
   low: "轻量",
+};
+
+const urgencyLabels = {
+  urgent: "紧急",
+  normal: "一般",
+  later: "可缓",
 };
 
 const filterTabs = [
@@ -24,6 +31,7 @@ const tasks = ref(loadTasks());
 const activeFilter = ref("all");
 const query = ref("");
 const theme = ref(localStorage.getItem(themeKey) || "light");
+const mood = ref(localStorage.getItem(moodKey) || "steady");
 
 const todayLabel = new Intl.DateTimeFormat("zh-CN", {
   year: "numeric",
@@ -36,7 +44,7 @@ const visibleTasks = computed(() => {
   const normalizedQuery = query.value.trim().toLowerCase();
 
   return tasks.value.filter((task) => {
-    const matchesQuery = [task.title, task.category, priorityLabels[task.priority]]
+    const matchesQuery = [task.title, task.category, priorityLabels[task.priority], urgencyLabels[task.urgency]]
       .join(" ")
       .toLowerCase()
       .includes(normalizedQuery);
@@ -56,6 +64,13 @@ const progress = computed(() => (tasks.value.length ? Math.round((doneCount.valu
 const canClearDone = computed(() => doneCount.value > 0);
 const themeIcon = computed(() => (theme.value === "dark" ? "☼" : "◐"));
 
+const moods = [
+  { value: "bright", label: "晴朗" },
+  { value: "steady", label: "平稳" },
+  { value: "focused", label: "专注" },
+  { value: "tired", label: "疲惫" },
+];
+
 watch(
   tasks,
   (nextTasks) => {
@@ -72,6 +87,10 @@ watch(
   },
   { immediate: true },
 );
+
+watch(mood, (nextMood) => {
+  localStorage.setItem(moodKey, nextMood);
+});
 
 function addTask(task) {
   tasks.value = [
@@ -122,7 +141,7 @@ function toggleTheme() {
 
 function formatTaskMeta(task) {
   const dueLabel = task.dueDate ? `截止 ${formatDueDate(task.dueDate)}` : "无截止日期";
-  return `${task.category || "工作"} · ${priorityLabels[task.priority] || "普通"} · ${dueLabel} · ${formatRelativeDate(task.createdAt)}`;
+  return `${task.category || "工作"} · ${priorityLabels[task.priority] || "普通"} · ${urgencyLabels[task.urgency] || "一般"} · ${dueLabel} · ${formatRelativeDate(task.createdAt)}`;
 }
 
 function formatDueDate(dateValue) {
@@ -184,6 +203,7 @@ function loadTasks() {
     return savedTasks.map((task) => ({
       category: "工作",
       dueDate: "",
+      urgency: "normal",
       ...task,
     }));
   } catch {
@@ -205,6 +225,28 @@ function loadTasks() {
           <span aria-hidden="true">{{ themeIcon }}</span>
         </button>
       </header>
+
+      <section class="task-guide" aria-label="任务引导">
+        <div>
+          <p class="guide-label">先写下一件最值得完成的事</p>
+          <p class="guide-copy">给任务选好分类、优先级和日期，再用心情标记今天的状态。</p>
+        </div>
+        <div class="mood-module" aria-label="今日心情">
+          <span>今日心情</span>
+          <div class="mood-options">
+            <button
+              v-for="item in moods"
+              :key="item.value"
+              class="mood-option"
+              :class="{ 'is-active': mood === item.value }"
+              type="button"
+              @click="mood = item.value"
+            >
+              {{ item.label }}
+            </button>
+          </div>
+        </div>
+      </section>
 
       <TaskForm @add-task="addTask" />
 
